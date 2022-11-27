@@ -1,11 +1,22 @@
 import { Outlet } from 'react-router-dom';
+import { VStack, Spacer } from '@chakra-ui/react';
+
+import Header from './Header';
+import Footer from './Footer';
 
 const RootLayout = () => {
   return (
-    <div>
-      <h2>RootLayout</h2>
+    <VStack
+      minH='100vh'
+      w={['90%', '90%', '80%', '70%', '60%', '50%']}
+      mx='auto'
+      pb='3'
+    >
+      <Header />
       <Outlet />
-    </div>
+      <Spacer />
+      <Footer />
+    </VStack>
   );
 };
 

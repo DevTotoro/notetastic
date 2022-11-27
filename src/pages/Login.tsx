@@ -15,7 +15,13 @@ import {
   Button,
   useColorMode,
 } from '@chakra-ui/react';
-import { FaEnvelope, FaKey, FaEye, FaEyeSlash } from 'react-icons/fa';
+import {
+  FaEnvelope,
+  FaKey,
+  FaEye,
+  FaEyeSlash,
+  FaSignInAlt,
+} from 'react-icons/fa';
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -46,7 +52,7 @@ const Login = () => {
             <InputLeftElement>
               <Icon
                 as={FaEnvelope}
-                color={colorMode === 'light' ? 'yellow.400' : 'yellow.200'}
+                color={colorMode === 'light' ? 'purple.500' : 'purple.200'}
               />
             </InputLeftElement>
             <Input type='email' variant='filled' disabled={isLoading} />
@@ -59,7 +65,7 @@ const Login = () => {
             <InputLeftElement>
               <Icon
                 as={FaKey}
-                color={colorMode === 'light' ? 'yellow.400' : 'yellow.200'}
+                color={colorMode === 'light' ? 'purple.500' : 'purple.200'}
               />
             </InputLeftElement>
             <Input
@@ -78,7 +84,7 @@ const Login = () => {
                   )
                 }
                 onClick={() => setPasswordVisible(!passwordVisible)}
-                colorScheme='yellow'
+                colorScheme='purple'
                 variant='ghost'
                 size='sm'
               />
@@ -88,9 +94,11 @@ const Login = () => {
         </FormControl>
 
         <Button
-          colorScheme='yellow'
+          colorScheme='purple'
+          rightIcon={<Icon as={FaSignInAlt} />}
           isLoading={isLoading}
           loadingText='Signing in'
+          spinnerPlacement='end'
           onClick={handleSignInClick}
         >
           Sign In
