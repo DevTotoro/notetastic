@@ -19,11 +19,17 @@ const Footer = () => {
         align='center'
         spacing={0}
       >
-        <Text fontSize='sm'>
+        <Text
+          fontSize='sm'
+          color={colorMode === 'light' ? 'gray.500' : 'gray.400'}
+        >
           &copy; 2022 Thodoris Batsikas. All Rights Reserved.
         </Text>
         <Spacer />
-        <Text fontSize='sm'>
+        <Text
+          fontSize='sm'
+          color={colorMode === 'light' ? 'gray.500' : 'gray.400'}
+        >
           Developed by{' '}
           <Link
             href='https://github.com/DevTotoro'

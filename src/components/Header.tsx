@@ -1,11 +1,12 @@
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import {
-  HStack,
+  Stack,
   Spacer,
   Text,
   IconButton,
   Icon,
   useColorMode,
+  useToast,
 } from '@chakra-ui/react';
 import {
   FaStickyNote,
@@ -16,15 +17,25 @@ import {
 } from 'react-icons/fa';
 
 const Header = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const { colorMode, toggleColorMode } = useColorMode();
+  const toast = useToast();
 
   const handleSignOutClick = () => {
-    console.log('Sign out clicked');
+    navigate('/login');
+
+    toast({
+      title: 'Bye!',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   return (
-    <HStack w='100%' py='3'>
+    <Stack direction='row' w='100%' py='3'>
       <IconButton
         aria-label='Notes'
         icon={<Icon as={FaStickyNote} />}
@@ -43,12 +54,18 @@ const Header = () => {
       />
 
       <Spacer />
-      <Text
-        fontSize='lg'
-        color={colorMode === 'light' ? 'purple.500' : 'purple.200'}
-      >
-        notetastic
-      </Text>
+      <Stack spacing='0' align='center'>
+        <Text color={colorMode === 'light' ? 'purple.500' : 'purple.200'}>
+          notetastic
+        </Text>
+        <Text
+          as='i'
+          fontSize='sm'
+          color={colorMode === 'light' ? 'gray.700' : 'gray.300'}
+        >
+          note keeping, simplified
+        </Text>
+      </Stack>
       <Spacer />
 
       <IconButton
@@ -67,7 +84,7 @@ const Header = () => {
         colorScheme='red'
         onClick={handleSignOutClick}
       />
-    </HStack>
+    </Stack>
   );
 };
 

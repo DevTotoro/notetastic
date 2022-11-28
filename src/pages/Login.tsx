@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Center,
   VStack,
@@ -14,6 +15,7 @@ import {
   Icon,
   Button,
   useColorMode,
+  useToast,
 } from '@chakra-ui/react';
 import {
   FaEnvelope,
@@ -27,14 +29,24 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const { colorMode } = useColorMode();
+  const toast = useToast();
 
   const handleSignInClick = () => {
     setIsLoading(true);
-    console.log('Sign in clicked');
 
     setTimeout(() => {
       setIsLoading(false);
+      navigate('/notes');
+
+      toast({
+        title: 'Welcome back!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     }, 2000);
   };
 
@@ -43,7 +55,12 @@ const Login = () => {
       <VStack spacing={5}>
         <VStack spacing={0}>
           <Text fontSize='3xl'>notetastic</Text>
-          <Text as='i'>taking notes, simplified</Text>
+          <Text
+            as='i'
+            color={colorMode === 'light' ? 'purple.500' : 'purple.200'}
+          >
+            note keeping, simplified
+          </Text>
         </VStack>
 
         <FormControl>
