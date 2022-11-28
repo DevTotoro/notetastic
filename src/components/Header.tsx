@@ -16,6 +16,10 @@ import {
   FaSignOutAlt,
 } from 'react-icons/fa';
 
+// Auth
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase/config';
+
 const Header = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -23,12 +27,26 @@ const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const toast = useToast();
 
-  const handleSignOutClick = () => {
+  const handleSignOutClick = async () => {
+    try {
+      await signOut(auth);
+    } catch (error: any) {
+      console.error(error.code, error.message);
+
+      toast({
+        title: 'Internal Server Error',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     navigate('/login');
 
     toast({
       title: 'Bye!',
-      status: 'success',
+      status: 'info',
       duration: 3000,
       isClosable: true,
     });

@@ -18,19 +18,16 @@ import {
   useColorMode,
   useToast,
 } from '@chakra-ui/react';
-import {
-  FaEnvelope,
-  FaKey,
-  FaEye,
-  FaEyeSlash,
-  FaSignInAlt,
-} from 'react-icons/fa';
+import { FaEnvelope, FaKey, FaEye, FaEyeSlash, FaPlus } from 'react-icons/fa';
 
 // Auth
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import {
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+} from 'firebase/auth';
 import { auth } from '../firebase/config';
 
-const Login = () => {
+const Register = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
@@ -49,25 +46,34 @@ const Login = () => {
     }
   });
 
-  const handleSignInClick = async () => {
+  const handleSignUpClick = async () => {
     setIsLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
+      setIsLoading(false);
+
       switch (error.code) {
-        case 'auth/user-not-found':
+        case 'auth/email-already-in-use':
           toast({
-            title: 'Please register first.',
+            title: 'Email already in use.',
             status: 'error',
             duration: 3000,
             isClosable: true,
           });
           break;
-        case 'auth/wrong-password':
         case 'auth/invalid-email':
           toast({
-            title: 'Invalid credentials.',
+            title: 'Please use a valid email address.',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          });
+          break;
+        case 'auth/weak-password':
+          toast({
+            title: 'Please use a stronger password.',
             status: 'error',
             duration: 3000,
             isClosable: true,
@@ -82,8 +88,6 @@ const Login = () => {
           });
           break;
       }
-
-      setIsLoading(false);
     }
   };
 
@@ -92,10 +96,7 @@ const Login = () => {
       <VStack spacing={5}>
         <VStack spacing={0}>
           <Text fontSize='3xl'>notetastic</Text>
-          <Text
-            as='i'
-            color={colorMode === 'light' ? 'purple.500' : 'purple.200'}
-          >
+          <Text as='i' color={colorMode === 'light' ? 'teal.500' : 'teal.200'}>
             note keeping, simplified
           </Text>
         </VStack>
@@ -106,7 +107,7 @@ const Login = () => {
             <InputLeftElement>
               <Icon
                 as={FaEnvelope}
-                color={colorMode === 'light' ? 'purple.500' : 'purple.200'}
+                color={colorMode === 'light' ? 'teal.500' : 'teal.200'}
               />
             </InputLeftElement>
             <Input
@@ -125,7 +126,7 @@ const Login = () => {
             <InputLeftElement>
               <Icon
                 as={FaKey}
-                color={colorMode === 'light' ? 'purple.500' : 'purple.200'}
+                color={colorMode === 'light' ? 'teal.500' : 'teal.200'}
               />
             </InputLeftElement>
             <Input
@@ -146,7 +147,7 @@ const Login = () => {
                   )
                 }
                 onClick={() => setPasswordVisible(!passwordVisible)}
-                colorScheme='purple'
+                colorScheme='teal'
                 variant='ghost'
                 size='sm'
               />
@@ -156,24 +157,24 @@ const Login = () => {
         </FormControl>
 
         <Button
-          colorScheme='purple'
-          rightIcon={<Icon as={FaSignInAlt} />}
+          colorScheme='teal'
+          rightIcon={<Icon as={FaPlus} />}
           isLoading={isLoading}
-          loadingText='Signing in'
+          loadingText='Signing up'
           spinnerPlacement='end'
-          onClick={handleSignInClick}
+          onClick={handleSignUpClick}
         >
-          Sign In
+          Sign Up
         </Button>
 
         <Text>
-          No account?{' '}
+          Already have an account?{' '}
           <Link
             as={RouterLink}
-            to='/register'
-            color={colorMode === 'light' ? 'purple.500' : 'purple.200'}
+            to='/login'
+            color={colorMode === 'light' ? 'teal.500' : 'teal.200'}
           >
-            Register here.
+            Login here.
           </Link>
         </Text>
       </VStack>
@@ -181,4 +182,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
