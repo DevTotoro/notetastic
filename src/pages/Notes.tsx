@@ -4,41 +4,55 @@ import { VStack } from '@chakra-ui/react';
 import Note from '../components/Note';
 import AddItem from '../components/AddItem';
 
-const dummyNotes: NoteType[] = [
-  {
-    id: '1',
-    body: 'This is a note',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    body: 'This is another note',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    body: 'This is a third note with long text that will wrap',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: '4',
-    body: 'This is a very long text that will 100% wrap. So this is a new line. And this is yet another line',
-    createdAt: new Date().toISOString(),
-  },
-];
+// Auth
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase/config';
+
+// Firestore
+import { db } from '../firebase/config';
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  getDocs,
+  onSnapshot,
+} from 'firebase/firestore';
 
 const Notes = () => {
-  const [notes, setNotes] = useState<NoteType[]>(dummyNotes);
+  const [notes, setNotes] = useState<NoteType[]>([]);
+  const [userId, setUserId] = useState('');
 
-  const fetchNotes = async () => {
-    console.log('Fetch notes');
-  };
+  const notesRef = collection(db, 'notes');
+  const q = query(
+    notesRef,
+    where('uid', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
+
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const notesArray: NoteType[] = [];
+    querySnapshot.forEach((doc) => {
+      const note = doc.data() as NoteType;
+      notesArray.push({ ...note, id: doc.id });
+    });
+
+    setNotes(notesArray);
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) setUserId(user.uid);
+  });
+
+  useEffect(() => {
+    return unsubscribe();
+  }, [userId]);
 
   return (
     <VStack w='100%'>
-      <AddItem type='Note' callback={fetchNotes} />
+      <AddItem type='Note' />
 
-      {dummyNotes.map((note) => (
+      {notes.map((note) => (
         <Note key={note.id} {...note} />
       ))}
     </VStack>

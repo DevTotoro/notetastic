@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   HStack,
   FormControl,
-  FormErrorMessage,
   Input,
   IconButton,
   Icon,
@@ -10,26 +9,48 @@ import {
 } from '@chakra-ui/react';
 import { FaPlus } from 'react-icons/fa';
 
-const AddItem = ({
-  type,
-  callback,
-}: {
-  type: 'Note' | 'Todo';
-  callback: () => any;
-}) => {
-  const [body, setBody] = useState('');
-  const [isInvalid, setIsInvalid] = useState(false);
+// Auth
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase/config';
+
+// Firestore
+import { db } from '../firebase/config';
+import { collection, addDoc } from 'firebase/firestore';
+
+const AddItem = ({ type }: { type: 'Note' | 'Todo' }) => {
+  const [userId, setUserId] = useState('');
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { colorMode } = useColorMode();
 
-  const handleAddNote = () => {
-    console.log('Add note');
-    callback();
+  onAuthStateChanged(auth, (user) => {
+    if (user) setUserId(user.uid);
+  });
+
+  const handleAddNote = async () => {
+    const text = inputRef.current?.value;
+    if (!text) return;
+
+    const notesRef = collection(db, 'notes');
+    await addDoc(notesRef, {
+      body: text,
+      uid: userId,
+      createdAt: new Date().toISOString(),
+    });
   };
 
-  const handleAddTodo = () => {
-    console.log('Add todo');
-    callback();
+  const handleAddTodo = async () => {
+    const text = inputRef.current?.value;
+    if (!text) return;
+
+    const todosRef = collection(db, 'todos');
+    await addDoc(todosRef, {
+      body: text,
+      uid: userId,
+      completed: false,
+      createdAt: new Date().toISOString(),
+    });
   };
 
   return (
@@ -41,16 +62,8 @@ const AddItem = ({
       borderRadius='md'
       spacing='5'
     >
-      <FormControl isRequired isInvalid={isInvalid}>
-        <Input
-          placeholder={`Add ${type}...`}
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          variant='filled'
-        />
-        {isInvalid && (
-          <FormErrorMessage>{`${type} cannot be empty`}</FormErrorMessage>
-        )}
+      <FormControl isRequired>
+        <Input placeholder={`Add ${type}...`} variant='filled' ref={inputRef} />
       </FormControl>
 
       <IconButton

@@ -8,13 +8,7 @@ import {
   useColorMode,
   useToast,
 } from '@chakra-ui/react';
-import {
-  FaStickyNote,
-  FaCheckCircle,
-  FaMoon,
-  FaSun,
-  FaSignOutAlt,
-} from 'react-icons/fa';
+import { FaStickyNote, FaCheckCircle, FaSignOutAlt } from 'react-icons/fa';
 
 // Auth
 import { signOut } from 'firebase/auth';
@@ -24,7 +18,7 @@ const Header = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const toast = useToast();
 
   const handleSignOutClick = async () => {
@@ -85,16 +79,6 @@ const Header = () => {
         </Text>
       </Stack>
       <Spacer />
-
-      <IconButton
-        aria-label='Toggle dark mode'
-        icon={
-          colorMode === 'light' ? <Icon as={FaMoon} /> : <Icon as={FaSun} />
-        }
-        variant='ghost'
-        colorScheme='purple'
-        onClick={toggleColorMode}
-      />
       <IconButton
         aria-label='Sign out'
         icon={<Icon as={FaSignOutAlt} />}

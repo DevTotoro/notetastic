@@ -10,13 +10,24 @@ import {
 } from '@chakra-ui/react';
 import { FaTrash } from 'react-icons/fa';
 
+// Firestore
+import { db } from '../firebase/config';
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
+
 const Todo = ({ id, body, completed }: TodoType) => {
   const [isCompleted, setIsCompleted] = useState(completed);
 
   const { colorMode } = useColorMode();
 
-  const handleDeleteClick = () => {
-    console.log('Delete todo', id);
+  const handleCheckboxChange = async () => {
+    setIsCompleted(!isCompleted);
+    await updateDoc(doc(db, 'todos', id), {
+      completed: !isCompleted,
+    });
+  };
+
+  const handleDeleteClick = async () => {
+    await deleteDoc(doc(db, 'todos', id));
   };
 
   return (
@@ -30,7 +41,7 @@ const Todo = ({ id, body, completed }: TodoType) => {
     >
       <Checkbox
         isChecked={isCompleted}
-        onChange={(e) => setIsCompleted(e.target.checked)}
+        onChange={() => handleCheckboxChange()}
         colorScheme='green'
       />
 

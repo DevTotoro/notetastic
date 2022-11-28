@@ -2,11 +2,15 @@ import type { Note as NoteType } from '../types';
 import { HStack, Text, IconButton, Icon, useColorMode } from '@chakra-ui/react';
 import { FaTrash } from 'react-icons/fa';
 
+// Firestore
+import { db } from '../firebase/config';
+import { doc, deleteDoc } from 'firebase/firestore';
+
 const Note = ({ id, body }: NoteType) => {
   const { colorMode } = useColorMode();
 
-  const handleDeleteClick = () => {
-    console.log('Delete note', id);
+  const handleDeleteClick = async () => {
+    await deleteDoc(doc(db, 'notes', id));
   };
 
   return (
