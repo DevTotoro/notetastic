@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import type { Note as NoteType } from '../types';
 import { VStack } from '@chakra-ui/react';
 import Note from '../components/Note';
+import AddItem from '../components/AddItem';
 
 const dummyNotes: NoteType[] = [
   {
@@ -26,8 +28,16 @@ const dummyNotes: NoteType[] = [
 ];
 
 const Notes = () => {
+  const [notes, setNotes] = useState<NoteType[]>(dummyNotes);
+
+  const fetchNotes = async () => {
+    console.log('Fetch notes');
+  };
+
   return (
     <VStack w='100%'>
+      <AddItem type='Note' callback={fetchNotes} />
+
       {dummyNotes.map((note) => (
         <Note key={note.id} {...note} />
       ))}

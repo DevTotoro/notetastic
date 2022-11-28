@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import type { Todo as TodoType } from '../types';
 import { VStack } from '@chakra-ui/react';
 import Todo from '../components/Todo';
+import AddItem from '../components/AddItem';
 
 const dummyTodos: TodoType[] = [
   {
@@ -24,9 +26,17 @@ const dummyTodos: TodoType[] = [
 ];
 
 const Todos = () => {
+  const [todos, setTodos] = useState<TodoType[]>(dummyTodos);
+
+  const fetchTodos = async () => {
+    console.log('Fetch todos');
+  };
+
   return (
     <VStack w='100%'>
-      {dummyTodos.map((todo) => (
+      <AddItem type='Todo' callback={fetchTodos} />
+
+      {todos.map((todo) => (
         <Todo key={todo.id} {...todo} />
       ))}
     </VStack>

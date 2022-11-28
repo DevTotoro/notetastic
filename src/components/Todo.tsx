@@ -31,7 +31,7 @@ const Todo = ({ id, body, completed }: TodoType) => {
       <Checkbox
         isChecked={isCompleted}
         onChange={(e) => setIsCompleted(e.target.checked)}
-        colorScheme='purple'
+        colorScheme='green'
       />
 
       <Text
